@@ -67,18 +67,21 @@ def create_model(
         # Use keras.layers.Input(), following this requirements:
         #   1. layer dtype must be tensorflow.float32
         # TODO
-        input = keras.layers.Input(dtype=df.float32)
-
+        input = keras.layers.Input(shape=input_shape, dtype=tf.float32)
+           
         # Create the data augmentation layers here and add to the model next
         # to the input layer
         # If no data augmentation was used, skip this
         # TODO
+        if data_aug_layer != None:
+            data_augmentation = create_data_aug_layer(data_aug_layer)
 
         # Add a layer for preprocessing the input images values
         # E.g. change pixels interval from [0, 255] to [0, 1]
         # Resnet50 already has a preprocessing function you must use here
         # See keras.applications.resnet50.preprocess_input()
         # TODO
+        x = keras.applications.resnet50.preprocess_input(input)
 
         # Create the corresponding core model using
         # keras.applications.ResNet50()
@@ -87,22 +90,30 @@ def create_model(
         #   2. Drop top layer (imagenet classification layer)
         #   3. Use Global average pooling as model output
         # TODO
+        base_model = keras.applications.resnet.ResNet50(
+            weights=weights,
+            include_top=False,
+        )
+        base_model.trainable = False
+        x = base_model(x, training=False)
+        x = keras.layers.GlobalAveragePooling2D()(x)
 
         # Add a single dropout layer for regularization, use
         # keras.layers.Dropout()
         # TODO
+        dropout = keras.layers.Dropout(dropout_rate)
 
         # Add the classification layer here, use keras.layers.Dense() and
         # `classes` parameter
         # Assign it to `outputs` variable
         # TODO
-        outputs = None
+        outputs = keras.layers.Dense(classes)(x)
 
         # Now you have all the layers in place, create a new model
         # Use keras.Model()
         # Assign it to `model` variable
         # TODO
-        model = None
+        model = keras.Model(inputs, outputs)
     else:
         # For this particular case we want to load our already defined and
         # finetuned model, see how to do this using keras

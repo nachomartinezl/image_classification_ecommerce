@@ -30,9 +30,21 @@ def create_data_aug_layer(data_aug_layer):
     # Append the data augmentation layers on this list
     data_aug_layers = []
 
+    DATA_AUG_LAYERS = {
+        'random_flip': keras.layers.RandomFlip(),
+        'random_rotation': keras.layers.RandomRotation(),
+        'random_zoom': keras.layers.RandomZoom()
+    }
+
+    for data_aug_name, data_aug_params in data_aug_layer.items():
+        data_aug_layers.append(DATA_AUG_LAYERS[data_aug_name](**data_aug_params))
+
+        del data_aug_layer
+
+        return data_aug_layers
     # Return a keras.Sequential model having the the new layers created
     # Assign to `data_augmentation` variable
     # TODO
-    data_augmentation = None
+    data_augmentation = tf.keras.Sequential([data_aug_layers])
 
     return data_augmentation
