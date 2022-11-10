@@ -151,7 +151,7 @@ def predict_from_folder(folder, model, input_size, class_names):
     paths = file_paths(filtered_walk(folder))
 
     for img in paths:
-        img = keras.utils.load_img(img, targe_size=input_size)
+        img = keras.utils.load_img(img, target_size=input_size)
         img= keras.utils.img_to_array(img)
         img = np.expand_dims(img, axis=0)
         images.append(img)
