@@ -1,5 +1,6 @@
 import os
 import yaml
+from yaml.loader import SafeLoader
 
 def validate_config(config):
     """
@@ -39,7 +40,8 @@ def load_config(config_file_path):
     """
     # TODO
     # Load config here and assign to `config` variable
-    config = yaml.load(config_file_path)
+    with open(config_file_path, 'rt', encoding='utf8') as yml:
+        config = yaml.safe_load(yml)
 
     # Don't remove this as will help you doing some basic checks on config
     # content

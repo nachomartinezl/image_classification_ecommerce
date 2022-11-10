@@ -1,4 +1,6 @@
 from utils.data_aug import create_data_aug_layer
+import tensorflow as tf
+from tensorflow import keras
 
 def create_model(
     weights: str = "imagenet",
@@ -75,13 +77,15 @@ def create_model(
         # TODO
         if data_aug_layer != None:
             data_augmentation = create_data_aug_layer(data_aug_layer)
-
+            x = data_augmentation(input)
+        else:
+            x = input
         # Add a layer for preprocessing the input images values
         # E.g. change pixels interval from [0, 255] to [0, 1]
         # Resnet50 already has a preprocessing function you must use here
         # See keras.applications.resnet50.preprocess_input()
         # TODO
-        x = keras.applications.resnet50.preprocess_input(input)
+        x = keras.applications.resnet50.preprocess_input(x)
 
         # Create the corresponding core model using
         # keras.applications.ResNet50()
@@ -92,28 +96,29 @@ def create_model(
         # TODO
         base_model = keras.applications.resnet.ResNet50(
             weights=weights,
+            input_shape=input_shape,
             include_top=False,
+            pooling='avg'
         )
         base_model.trainable = False
         x = base_model(x, training=False)
-        x = keras.layers.GlobalAveragePooling2D()(x)
 
         # Add a single dropout layer for regularization, use
         # keras.layers.Dropout()
         # TODO
-        dropout = keras.layers.Dropout(dropout_rate)
+        x = keras.layers.Dropout(dropout_rate)(x)
 
         # Add the classification layer here, use keras.layers.Dense() and
         # `classes` parameter
         # Assign it to `outputs` variable
         # TODO
-        outputs = keras.layers.Dense(classes)(x)
+        outputs = keras.layers.Dense(classes, activation='softmax')(x)
 
         # Now you have all the layers in place, create a new model
         # Use keras.Model()
         # Assign it to `model` variable
         # TODO
-        model = keras.Model(inputs, outputs)
+        model = keras.Model(inputs=input, outputs=outputs)
     else:
         # For this particular case we want to load our already defined and
         # finetuned model, see how to do this using keras
