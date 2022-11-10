@@ -2,6 +2,8 @@ import os
 import yaml
 from walkdir import filtered_walk, file_paths
 import numpy as np
+import tensorflow
+from tensorflow import keras
 
 def validate_config(config):
     """
