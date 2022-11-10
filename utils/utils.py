@@ -1,6 +1,7 @@
 import os
 import yaml
-from yaml.loader import SafeLoader
+from walkdir import filtered_walk, file_paths
+import numpy as np
 
 def validate_config(config):
     """
@@ -143,5 +144,19 @@ def predict_from_folder(folder, model, input_size, class_names):
     # TODO
     predictions = None
     labels = None
+    images = []
+
+    paths = file_paths(filtered_walk(folder))
+
+    for img in paths:
+        img = keras.utils.load_img(img, targe_size=input_size)
+        img= keras.utils.img_to_array(img)
+        img = np.expand_dims(img, axis=0)
+        images.append(img)
+
+    images = np.vstack(images)
+
+    predictions = model.predict(images, batch_size=32)
+    labels = class_names[np.argmax(predictions,axis=1)]
 
     return predictions, labels
