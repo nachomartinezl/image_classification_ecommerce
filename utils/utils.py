@@ -2,8 +2,6 @@ import os
 import yaml
 from walkdir import filtered_walk, file_paths
 import numpy as np
-import tensorflow
-from tensorflow import keras
 
 def validate_config(config):
     """
@@ -144,16 +142,21 @@ def predict_from_folder(folder, model, input_size, class_names):
     # the highest probability and use that to get the corresponding class
     # name from `class_names` list.
     # TODO
-    predictions = []
-    labels = []
+    predictions = None
+    labels = None
+    images = []
 
     paths = file_paths(filtered_walk(folder))
 
     for img in paths:
-        img = keras.utils.load_img(img, target_size=input_size)
+        img = keras.utils.load_img(img, targe_size=input_size)
         img= keras.utils.img_to_array(img)
         img = np.expand_dims(img, axis=0)
-        predictions.append(model.predict(img))
-        labels.append(class_names[np.argmax(predictions)])
+        images.append(img)
+
+    images = np.vstack(images)
+
+    predictions = model.predict(images, batch_size=32)
+    labels = class_names[np.argmax(predictions,axis=1)]
 
     return predictions, labels
