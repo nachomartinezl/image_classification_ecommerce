@@ -29,6 +29,7 @@ OPTIMIZERS = {
 
 # Supported callbacks
 CALLBACKS = {
+    "early_stopping": keras.callbacks.EarlyStopping,
     "model_checkpoint": keras.callbacks.ModelCheckpoint,
     "tensor_board": keras.callbacks.TensorBoard,
 }
