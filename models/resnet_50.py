@@ -101,7 +101,9 @@ def create_model(
             include_top=False,
             pooling='avg'
         )
+
         base_model.trainable = False
+
         x = base_model(x, training=False)
 
         # Add a single dropout layer for regularization, use
@@ -125,5 +127,9 @@ def create_model(
         # finetuned model, see how to do this using keras
         # Assign it to `model` variable
         # TODO
-        model = keras.models.load_model(weights, compile=True)
+
+        model = keras.models.load_model(weights,compile=True)
+
+        model.trainable = True
+
     return model
