@@ -2,6 +2,7 @@ from utils.data_aug import create_data_aug_layer
 import tensorflow as tf
 from tensorflow import keras
 
+
 def create_model(
     weights: str = "imagenet",
     input_shape: tuple = (224, 224, 3),
@@ -124,6 +125,5 @@ def create_model(
         # finetuned model, see how to do this using keras
         # Assign it to `model` variable
         # TODO
-        model = None
-
+        model = keras.models.load_model(weights, compile=True)
     return model
