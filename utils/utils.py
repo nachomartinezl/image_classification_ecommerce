@@ -1,7 +1,6 @@
 import os
 import yaml
 import numpy as np
-import tensorflow
 from tensorflow import keras
 
 def validate_config(config):
@@ -145,18 +144,27 @@ def predict_from_folder(folder, model, input_size, class_names):
     # TODO
     predictions = []
     labels = []
-    items = walkdir(folder)
 
-    for item in items:
-        path = os.path.join(item[0], item[1])
-        img = keras.utils.load_img(path,target_size=input_size)
-        img = keras.utils.img_to_array(img)
-        img = keras.applications.resnet50.preprocess_input(img)
-        img = np.expand_dims(img, axis=0)
-        prediction = model.predict(img)
-        max_idx = np.argmax(prediction)
-        predictions.append(class_names[max_idx])
-        labels.append(os.path.basename(os.path.dirname(path)))
+    #for item in items:
+    #    img = os.path.join(item[0], item[1])
+    #    img = keras.utils.load_img(img,target_size=input_size)
+    #    img = keras.utils.img_to_array(img)
+    #    img = keras.applications.resnet50.preprocess_input(img)cd
+    #    img = np.expand_dims(img, axis=0)
+    #    images.append(img)
+
+    test_images = keras.utils.image_dataset_from_directory(
+    folder,
+    labels='inferred',
+    label_mode='categorical',
+    class_names=class_names,
+    batch_size=32,
+    image_size=input_size
+    )
+
+    for x, y in test_images:
+        predictions = np.concatenate([predictions, np.argmax(model.predict(x), axis =-1)])
+        labels = np.concatenate([labels, np.argmax(y.numpy(), axis=-1)])
 
     return predictions, labels
 
