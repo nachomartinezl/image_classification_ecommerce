@@ -9,6 +9,8 @@ same directory structure with its subfolders but with new images.
 """
 
 import argparse
+from utils import utils
+import cv2
 
 
 def parse_args():
@@ -58,6 +60,11 @@ def main(data_folder, output_data_folder):
     #      to create additional subfolders following the original
     #      `data_folder` structure.
     # TODO
+    images = utils.walkdir(data_folder)
+
+    for image in images:
+        img = cv2.imread(image)
+        utils.detection.get_vehicle_coordinates(img)
 
 
 if __name__ == "__main__":

@@ -60,5 +60,7 @@ def get_vehicle_coordinates(img):
     """
     # TODO
     box_coordinates = None
+     
+    DET_MODEL(img)    
 
     return box_coordinates
