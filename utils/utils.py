@@ -151,20 +151,34 @@ def predict_from_folder(folder, model, input_size, class_names):
     #    img = keras.utils.img_to_array(img)
     #    img = keras.applications.resnet50.preprocess_input(img)cd
     #    img = np.expand_dims(img, axis=0)
-    #    images.append(img)
+    #    prediction = model.predict(img)
+    #    max_idx = np.argmax(prediction)
+    #    predictions.append(class_names[max_idx])
+    #    labels.append(os.path.basename(os.path.dirname(path)))
 
-    test_images = keras.utils.image_dataset_from_directory(
-    folder,
-    labels='inferred',
-    label_mode='categorical',
-    class_names=class_names,
-    batch_size=32,
-    image_size=input_size
-    )
+    #test_images = keras.utils.image_dataset_from_directory(
+    #folder,
+    #labels='inferred',
+    #label_mode='categorical',
+    #class_names=class_names,
+    #batch_size=32,
+    #image_size=input_size
+    #)
 
-    for x, y in test_images:
-        predictions = np.concatenate([predictions, np.argmax(model.predict(x), axis =-1)])
-        labels = np.concatenate([labels, np.argmax(y.numpy(), axis=-1)])
+    #for x, y in test_images:
+    #        predictions = np.concatenate([predictions, np.argmax(model.predict(x), axis =-1)])
+    #        labels = np.concatenate([labels, np.argmax(y.numpy(), axis=-1)])
+    
+    for dirpath, _, files in os.walk(folder):
+        for filename in files:
+            img =os.path.join(dirpath, filename)
+            img = keras.utils.load_img(img,target_size=input_size)
+            img = keras.utils.img_to_array(img)
+            img = np.expand_dims(img,axis=0)
+            prediction = np.argmax(model.predict(img)) 
+            label = dirpath.split('/')[-1]
+            predictions.append(class_names[prediction])
+            labels.append(label)
 
     return predictions, labels
 
