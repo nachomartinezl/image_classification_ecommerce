@@ -1,6 +1,7 @@
 from detectron2 import model_zoo
 from detectron2.config import get_cfg
 from detectron2.engine.defaults import DefaultPredictor
+import numpy as np
 
 # The chosen detector model is "COCO-Detection/faster_rcnn_R_101_FPN_3x.yaml"
 # because this particular model has a good balance between accuracy and speed.
@@ -58,9 +59,19 @@ def get_vehicle_coordinates(img):
         List having bounding box coordinates as [left, top, right, bottom].
         Also known as [x1, y1, x2, y2].
     """
-    # TODO
+    # TODO 
     box_coordinates = None
-     
-    DET_MODEL(img)    
+    output = DET_MODEL(img)
+    classes = output["instances"].pred_classes.cpu().numpy()
+    boxes = output["instances"].pred_boxes.tensor.cpu().numpy()
+
+    if len(classes) > 0:
+        scope = boxes[(classes == 2) | (classes == 7)]
+        if len(scope) > 0:
+            area = np.argmax([(x2 - x1) * (y2 - y1) for x1, y1, x2, y2 in scope])
+            box_coordinates = [int(i) for i in scope[area]]
+    else:
+        height, width = img.shape[:2]    
+        box_coordinates = [0, 0, width, height]
 
     return box_coordinates
