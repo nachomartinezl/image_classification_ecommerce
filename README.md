@@ -17,6 +17,7 @@ $ docker build -t sp_05 --build-arg USER_ID=$(id -u) --build-arg GROUP_ID=$(id -
 ```bash
 $ docker build -t sp_05 -f docker/Dockerfile_gpu .
 $ docker build -t sp_05 --build-arg USER_ID=$(id -u) --build-arg GROUP_ID=$(id -g) -f docker/Dockerfile_gpu .
+$ docker build -t dnt --build-arg USER_ID=$(id -u) --build-arg GROUP_ID=$(id -g) -f docker/Dockerfile_gpu .
 ```
 
 ### Run Docker
@@ -29,6 +30,12 @@ $ docker run --rm --net host -it \
     --workdir /home/app/src \
     sp_05 \
     bash
+
+$ docker run --rm --net host -it \
+    -v $(pwd):/home/app/src \
+    --workdir /home/app/src \
+    dnt \
+    bash    
 ```
 
 - **GPU:**
