@@ -30,12 +30,6 @@ $ docker run --rm --net host -it \
     --workdir /home/app/src \
     sp_05 \
     bash
-
-$ docker run --rm --net host -it \
-    -v $(pwd):/home/app/src \
-    --workdir /home/app/src \
-    dnt \
-    bash    
 ```
 
 - **GPU:**
@@ -45,6 +39,12 @@ $ docker run --rm --net host --gpus all -it \
     -v $(pwd):/home/app/src \
     --workdir /home/app/src \
     sp_05 \
+    bash
+
+$ docker run --rm --net host --gpus all -it \
+    -v $(pwd):/home/app/src \
+    --workdir /home/app/src \
+    dnt \
     bash
 ```
 
