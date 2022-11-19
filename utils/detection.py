@@ -60,7 +60,6 @@ def get_vehicle_coordinates(img):
         Also known as [x1, y1, x2, y2].
     """
     # TODO 
-    box_coordinates = None
     output = DET_MODEL(img)
     classes = output["instances"].pred_classes.cpu().numpy()
     boxes = output["instances"].pred_boxes.tensor.cpu().numpy()
@@ -70,8 +69,8 @@ def get_vehicle_coordinates(img):
         if len(scope) > 0:
             area = np.argmax([(x2 - x1) * (y2 - y1) for x1, y1, x2, y2 in scope])
             box_coordinates = [int(i) for i in scope[area]]
-    else:
-        height, width = img.shape[:2]    
-        box_coordinates = [0, 0, width, height]
+        else:
+            height, width = img.shape[:2]    
+            box_coordinates = [0, 0, width, height]
 
     return box_coordinates
