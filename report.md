@@ -13,8 +13,25 @@ Images are downloaded from an S3 bucket using the 'download.py' script. Then, wi
 A docker image is mounted in order to gather all the requirements needed to run the model. Inside the container, GPU provided by AWS performs the computation for every experiment and after every session model weights and logs are stored in a dedicated folder. Predictions are made from the notebook 'Model Evaluation.ipynb', where the performance of the best model is analyzed with a classification report provided by scikit-learn.
 
 ## 4. Experiments
+In order to achieve the best possible results, 13 experiments has been made:
 
-
+```
+exp_001: imagenet
+exp_002: imagenet
+├── exp_003: model.12
+├── exp_004: model.12
+├── exp_005: model.12
+│   └── exp_006: model.69
+└── exp_008: model.12
+exp_007: imagenet
+exp_009: imagenet (v2)
+    └── exp_010: model.22 (v2)
+exp_011: imagenet (v2)
+exp_012: imagenet (v2)
+    └── exp_013: model.24 (v2)
+```
+The first eight experiments used the original images for train and test. After achieving an acceptable val_accuracy with no overfitting in exp_002, those weights were used in the next experiments with the base_model unfreezed.
+![exp_002 accuracy](/path/to/img.jpg "Accuracy")
 
 
 ## 5. Conclusion
