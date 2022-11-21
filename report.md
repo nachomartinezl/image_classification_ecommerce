@@ -30,12 +30,71 @@ exp_011: imagenet (v2)
 exp_012: imagenet (v2)
     └── exp_013: model.24 (v2)
 ```
-The first eight experiments used the original images for train and test. After achieving an acceptable val_accuracy with no overfitting in exp_002, those weights were used in the next experiments with the base_model unfreezed.
-![exp_002 accuracy](/path/to/img.jpg "Accuracy")
+The experiments indicating 'imagenet' used those already trained weights where the ones indicating a model number trained the whole network using some custom weights obtained in a training session that used imagenet. 'v2' stands for the second version of the images, the ones that were cropped before the training, in order to remove their backgrounds.
 
+This is the starting point for the model and compile parameters in the config.yml file:
+```yml
+model:
+    weights: "imagenet"
+    input_shape: [224, 224, 3]
+    classes: 196
+    dropout_rate: 0.3
+    data_aug_layer:
+        random_flip:
+            mode: "horizontal"
+        random_rotation:
+            factor: 0.2
+        random_zoom:
+            height_factor: 0.2
+            width_factor: 0.2
+
+compile:
+    optimizer:
+        adam:
+            learning_rate: 0.0001
+    loss: "categorical_crossentropy"
+    metrics: ["accuracy"]
+```
+- weights vary according to the use of 'imagenet' weigths or custom ones.
+- dropout_rate also varies throughout the training sessions.
+- for data_aug_layer, the random_flip is also configured in 'horizontal_and_vertical'.
+- for the optimizer, sgd instead of adam is tried in an experiment.
+- the learning rate is the most variable parameter, ranging from 0.00001 to 0.005.
+- the parameters not mentioned in this list remain unchanged.
+
+The first eight experiments used the original images for train and test. After achieving an acceptable val_accuracy with no overfitting in exp_002, those weights were used in the next experiments with the base_model unfreezed.
+
+- exp_002 acc
+### <img src="experiments/exp_002/epoch_accuracy.svg" alt="graph" width="300"/>
+(blue: validation, orange: train)
+
+As it can be observed, after epoch 12, train accuracy starts overcoming validation. Before that point validation accuracy was slightly higher due to a considerable level of dropout rate at 0.3. Learning rate at this point was 0.0001. 
+Next experiments (exp_003 - exp_006) try lower learning rates (0.00001, 0.00003 and 0.00005) in order to fit better with the base layers now unfreezed. 
+Experiment seven retrains the model with 'imagenet' weights, but now with 'horizontal_and_vertical' mode in the random_flip for data augmentation. It obtains very similar results comparing with the exp_002. 
+
+For the next one, exp_008 takes the weights obtained at epoch 12 of exp_002 again:
+- exp_008 loss
+### <img src="experiments/exp_008/epoch_loss.svg" alt="graph" width="300"/>
+
+This session gets the dropout_rate up to 0.4 and in the Model Evaluation obtains 0.52 of accuracy. Nevertheless, the level of overfit is quite high analyzing the difference of accuracy between train and validation, that reaches 0.4 points.
+
+The second part of the experimentation uses images with removed backgrounds.
+- exp_009 accuracy
+### <img src="experiments/exp_009/epoch_accuracy.svg" alt="graph" width="300"/>
+
+- exp_009 loss
+### <img src="experiments/exp_009/epoch_loss.svg" alt="graph" width="300"/>
+Passing epoch 20 and with a 0.35 val_accuracy, the overfitting level started to exceed a 0.10 difference so the training was stopped.
+
+The next successful attempts where exp_012 and exp_013, where following the same workflow, first 'imagenet' then the custom weights for all the network, the final result was an accuracy of 0.68 in the model predict evaluation. The level of overfitting reaches 0.10 max. between train and validation.
+- exp_012 accuracy
+### <img src="experiments/exp_012/epoch_accuracy (1).svg" alt="graph" width="300"/>
+- exp_013 accuracy
+### <img src="experiments/exp_013/epoch_accuracy.svg" alt="graph" width="300"/>
+The learning rate for exp_012 was set at 0.0001 and 0.00001 for exp_013. Dropout rate was back at 0.3 and the random_flip in data_aug only 'horizontal'. The optimizer here was also 'adam'.
 
 ## 5. Conclusion
-
+Given the amount of data used for training, the results obtained after removing the backgrounds performed decently but not at its highest level. If more data were available, maybe the accuracy could be improved with less overfitting. Analyzing the data for all the experiments, when the accuracy pass the point of 0.3 the model starts to overfit and the regularization strategies cannot do much to avoid this.
 
 
 

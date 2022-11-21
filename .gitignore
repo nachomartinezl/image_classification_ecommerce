@@ -131,3 +131,6 @@ dmypy.json
 #Data
 data
 *.h5
+notebooks/Model\ Evaluation_exp008*
+notebooks/Model\ Evaluation_exp010*
+notebooks/Model\ Evaluation_exp012*
