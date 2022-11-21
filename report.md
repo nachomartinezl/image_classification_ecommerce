@@ -86,7 +86,7 @@ The second part of the experimentation uses images with removed backgrounds.
 ### <img src="experiments/exp_009/epoch_loss.svg" alt="graph" width="300"/>
 Passing epoch 20 and with a 0.35 val_accuracy, the overfitting level started to exceed a 0.10 difference so the training was stopped.
 
-The next successful attempts where exp_012 and exp_013, where following the same workflow, first 'imagenet' then the custom weights for all the network, the final result was an accuracy of 0.68 in the model predict evaluation. The level of overfitting reaches 0.10 max. between train and validation.
+The next successful attempts where exp_012 and exp_013, where following the same workflow, first 'imagenet' then the custom weights for all the network, the final result was an accuracy of 0.65 in the model predict evaluation. The level of overfitting reaches 0.10 max. between train and validation.
 - exp_012 accuracy
 ### <img src="experiments/exp_012/epoch_accuracy (1).svg" alt="graph" width="300"/>
 - exp_013 accuracy
